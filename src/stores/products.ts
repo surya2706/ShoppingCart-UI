@@ -1,6 +1,6 @@
-import { ref, computed, onMounted } from "vue";
-import { defineStore } from "pinia";
-import { faker } from "@faker-js/faker";
+import { ref, computed, onMounted } from 'vue';
+import { defineStore } from 'pinia';
+import { faker } from '@faker-js/faker';
 
 export interface Product {
   id: string;
@@ -18,32 +18,34 @@ export interface Cart extends Product {
 
 faker.seed(99);
 
-export const useProductStore = defineStore("products", () => {
-  // const allProducts: Product[] = [...Array(20)].map(() => ({
-  //   id: faker.datatype.uuid(),
-  //   name: faker.commerce.productName(),
-  //   price: faker.commerce.price(),
-  //   rating: faker.helpers.arrayElement([1, 2, 3, 4, 5]),
-  //   image: faker.image.image(),
-  //   inStock: faker.helpers.arrayElement([0, 3, 5, 6, 7]),
-  //   fastDelivery: faker.datatype.boolean(),
-  // }));
-  // console.log("products", allProducts);
+export const useProductStore = defineStore('products', () => {
+  const allProducts: Product[] = [...Array(20)].map(() => ({
+    id: faker.datatype.uuid(),
+    name: faker.commerce.productName(),
+    price: faker.commerce.price(),
+    rating: faker.helpers.arrayElement([1, 2, 3, 4, 5]),
+    image: faker.image.image(),
+    inStock: faker.helpers.arrayElement([0, 3, 5, 6, 7]),
+    fastDelivery: faker.datatype.boolean(),
+  }));
+  console.log('products', allProducts);
 
-  const products: any = ref([]);
+  const products: any = ref(allProducts);
+  // const products: any = ref([]);
   const cart: any = ref([]);
 
   const cartLength: any = computed(() => cart.value.length);
 
-  async function fetchProducts() {
-    try {
-      const response = await fetch("http://localhost:3000/products");
-      const data = await response.json();
-      products.value = data.allProducts;
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  // async function fetchProducts() {
+  //   try {
+  //     const response = await fetch('http://localhost:3000/products');
+  //     const data = await response.json();
+  //     console.log('data', typeof data);
+  //     products.value = data.allProducts;
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
 
   function addToCart(payload: Product) {
     cart.value.push({ ...payload, qty: 1 });
@@ -62,7 +64,7 @@ export const useProductStore = defineStore("products", () => {
     cart.value = updatedCart;
   }
 
-  onMounted(fetchProducts);
+  // onMounted(fetchProducts);
 
   return {
     products,
@@ -71,6 +73,6 @@ export const useProductStore = defineStore("products", () => {
     addToCart,
     removeFromCart,
     setQuantity,
-    fetchProducts,
+    // fetchProducts,
   };
 });

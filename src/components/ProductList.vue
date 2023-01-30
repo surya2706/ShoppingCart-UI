@@ -1,10 +1,10 @@
 <script lang="ts">
-import { storeToRefs } from "pinia";
+import { storeToRefs } from 'pinia';
 
-import { useProductStore } from "../stores/products";
-import { useFilterStore } from "../stores/filter";
-import StarRating from "./StarRating.vue";
-import type { Product } from "../stores/products";
+import { useProductStore } from '../stores/products';
+import { useFilterStore } from '../stores/filter';
+import StarRating from './StarRating.vue';
+import type { Product } from '../stores/products';
 
 export default {
   components: {
@@ -16,7 +16,8 @@ export default {
     const { byDelivery, byRating, byStock, sortType, searchQuery } =
       storeToRefs(filterStore);
     const { products, cart } = storeToRefs(productStore);
-    const { addToCart, removeFromCart, fetchProducts } = productStore;
+    const { addToCart, removeFromCart } = productStore;
+    // console.log('products', products);
     return {
       products,
       cart,
@@ -27,7 +28,7 @@ export default {
       byStock,
       sortType,
       searchQuery,
-      fetchProducts,
+      // fetchProducts,
     };
   },
 
@@ -40,23 +41,28 @@ export default {
   computed: {
     filteredProducts() {
       let productCopy = this.products.slice();
+      // console.log('productCopy', productCopy);
       if (this.byDelivery) {
         productCopy = productCopy.filter(
           (prd: Product) => prd.fastDelivery === true
         );
       } else if (this.byStock) {
-        productCopy = productCopy.filter((prd: Product) => prd.inStock > 0);
-      } else if (this.sortType === "asc") {
+        productCopy = productCopy.filter((prd: Product) => {
+          // console.log('prd', prd.inStock);
+          // console.log('gtz', prd.inStock > 0);
+          return prd.inStock > 0;
+        });
+      } else if (this.sortType === 'asc') {
         productCopy = productCopy.sort(
           (a: Product, b: Product) => a.price - b.price
         );
-      } else if (this.sortType === "desc") {
+      } else if (this.sortType === 'desc') {
         productCopy = productCopy.sort(
           (a: Product, b: Product) => b.price - a.price
         );
       } else if (this.byRating) {
         productCopy = productCopy.filter(
-          (prd: Product) => prd.rating > this.byRating
+          (prd: Product) => prd.rating == this.byRating
         );
       } else if (this.searchQuery) {
         productCopy = productCopy.filter((prd: Product) =>
@@ -90,7 +96,7 @@ export default {
             :disabled="!product.inStock"
             @click="addToCart(product)"
           >
-            {{ (product.inStock && "Add to Cart") || "Out of Stock" }}
+            {{ (product.inStock && 'Add to Cart') || 'Out of Stock' }}
           </button>
           <button
             v-if="checkProductAddedToCart(product.id)"
